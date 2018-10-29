@@ -7,16 +7,27 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                             tabPanel(title = 'Introduction',
                                      fluid = TRUE,
                                      fluidRow(
-                                       h3('Introduction and Notes on the Data Set'),
-                                       leafletOutput('basicMap'),
-                                       h2('Map should be above'),
-                                       print('Yes Map')
+                                      column(12,
+                                             includeMarkdown('Intro.md'))
+                                      ),
+                                     fluidRow(
+                                       column(12,
+                                              leafletOutput('basicMap'),
+                                              helpText('<strong>Exlpore the map of New York State.</strong>
+                                                        <br>Familiarize yourself with the different state counties.
+                                                        <br>Population information is from 2010 census data.'))
+                                     )
+                            ),
+                            tabPanel(title = 'About the App',
+                                     fluidRow(
+                                       column(12,
+                                              includeMarkdown('About.md'))
                                      )
                             )
                  ), # navbarMenu
                  tabPanel( title = tagList(shiny::icon('map'), 'County Map'),
                            fluid = TRUE,
-                           column(4,
+                           column(3,
                                   wellPanel(
                                     helpText('To view county trends in maternity health and births in 
                                              New York State begin by selecting year, category and metric.'),
@@ -30,7 +41,7 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                     uiOutput('metric')
                                     )
                            ),
-                           column(8,
+                           column(9,
                                   fluidRow(
                                     h3('Maternity and Birth Trends By County'),
                                     leafletOutput('countyMetric'),

@@ -56,7 +56,7 @@ server <-  function(input, output, session) {
   output$basicMap <- renderLeaflet({
     
     leaflet(NY) %>%
-      setView(lng = -76.0, lat = 42.75, zoom = 6.65) %>%
+      setView(lng = -76.0, lat = 42.75, zoom = 6.55) %>%
       addTiles() %>%
       addPolygons(fillColor = 'blue',
                   weight = 1,
@@ -70,16 +70,19 @@ server <-  function(input, output, session) {
                                                fillOpacity = 0.2,
                                                bringToFront = TRUE),
                   popup = popup_dat)
-    
+      
   })
-  
+
+
   ### tab 1
+  
+  # '%!in%' <- function(x,y)!('%in%'(x,y))
   
   # map for metric, percent percents
   output$countyMetric <- renderLeaflet({
     
     m <- merged %>%
-      dplyr::filter(., Year %in% input$year & Measure %in% input$metric) %>%
+      dplyr::filter(., Year %in% input$year & Measure %in% input$metric & County != 'Statewide') %>%
       select(County, n, t)
     
     leaflet() %>%
