@@ -12,21 +12,29 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                       ),
                                      fluidRow(
                                        br(),
-                                       column(3,
+                                       column(4,
                                               br(),
+                                              column(3,
+                                                img(src = './NYS.jpg', style='width:110%; border:0px;')),
                                               p('Exlpore the map of New York State. 
                                                 Familiarize yourself with the different state counties.'),
-                                              helpText('Note: Population information is from 2010 census data.')),
-                                       column(9,
-                                              leafletOutput('basicMap'))
-                                     )
-                            ),
+                                              helpText('Note: Population information is from 2010 census data.'),
+                                              p('Data from: '),
+                                              img(src = './health.jpeg', style='width:100%; border:0px'),
+                                              br(),
+                                              br(),
+                                              img(src = './its.png', style='width:110%; border:0px')
+                                              ),
+                                       column(8,
+                                              leafletOutput('basicMap')
+                                              ))
+                            ), # nav tab 1
                             tabPanel(title = 'About the App',
                                      fluidRow(
                                        column(12,
                                               includeMarkdown('About.md'))
                                      )
-                            )
+                            ) # nav tab 2
                  ), # navbarMenu
                  tabPanel( title = tagList(shiny::icon('map'), 'County Map'),
                            fluid = TRUE,

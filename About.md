@@ -8,6 +8,8 @@ Missing counties:
 Future plans for this app:
 Include specific infant birth data, e.g, birth weight, gestation at birth etc.
 Included data from missing counties.
+Add feature to compare maternal birth metric to infant birth metric.
+  e.g. Delivery method and infant birth weight.
 Add socieconomic census data.
 Add datasets from 2017 onwards, once available.
 
