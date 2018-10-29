@@ -56,7 +56,7 @@ server <-  function(input, output, session) {
   output$basicMap <- renderLeaflet({
     
     leaflet(NY) %>%
-      setView(lng = -76.0, lat = 42.75, zoom = 6.55) %>%
+      setView(lng = -76.0, lat = 42.75, zoom = 6.5) %>%
       addTiles() %>%
       addPolygons(fillColor = 'blue',
                   weight = 1,
