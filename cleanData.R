@@ -23,7 +23,7 @@ maternity$County <- stringr::str_to_title(maternity$County)
 
 # county shape files, transform from UTM to longlat
 
-shape <-  readOGR('~/Desktop/NYS/Shapes/Counties_Shoreline.shp')
+shape <-  readOGR('./Shapes/Counties_Shoreline.shp')
 
 shapeData <- spTransform(shape, CRS("+proj=longlat +ellps=GRS80"))
 

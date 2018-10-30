@@ -7,13 +7,14 @@ library(tidyverse)
 library(ggplot2)
 library(leaflet)
 library(googleVis)
+library(mapdata)
 
 ### Load data ###
 # County shape files, transform from UTM to longlat
-shape <-  readOGR('~/Desktop/NYS/Shapes/Counties_Shoreline.shp')
+shape <-  readOGR('./Shapes/Counties_Shoreline.shp')
 NY <- spTransform(shape, CRS('+proj=longlat +ellps=GRS80'))
 
-df <- read_csv('~/Desktop/NYS/Data/Hospital_Maternity_Information__Beginning_2008.csv')
+df <- read_csv('./Hospital_Maternity_Information__Beginning_2008.csv')
 
 # reformatting columns
 cols = colnames(df)

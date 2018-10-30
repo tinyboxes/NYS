@@ -1,4 +1,4 @@
-Introduction
+#### Introduction
 
 New York State's Maternity Information Law requires each hospital to provide information about its childbirth practices and procedures. It aims to help individuals, specifically expectant mothers, to understand what they can expect, learn about childbirth choices, and plan for their baby's birth.
 

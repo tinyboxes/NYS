@@ -20,10 +20,10 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                                 Familiarize yourself with the different state counties.'),
                                               helpText('Note: Population information is from 2010 census data.'),
                                               p('Data from: '),
-                                              img(src = './health.jpeg', style='width:100%; border:0px'),
+                                              img(src = './health.jpeg', style='width:90%; border:0px'),
                                               br(),
                                               br(),
-                                              img(src = './its.png', style='width:110%; border:0px')
+                                              img(src = './its.png', style='width:100%; border:0px')
                                               ),
                                        column(8,
                                               leafletOutput('basicMap')
@@ -96,12 +96,12 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                             choices = 2008:2016),
                               selectizeInput(inputId='cat3', label = 'Category',
                                             choices = unique(maternity$Category),
-                                            selected = 'Route & Method'),
+                                            selected = 'All Deliveries'),
                               uiOutput('metric3')),
                             mainPanel(
                               fluidRow(
                                 h1('Maternity and Birth Trends By Hospital'),
-                                uiOutput('hospitalMap'),
+                                htmlOutput('hospitalMap'),
                                 p('Explore specific hospital by clicking on a marker.'))
                               )
                             )
@@ -116,24 +116,25 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                # Input: Dropdown Box for Category
                                selectizeInput(inputId='cat4', label = 'Category',
                                               choices = unique(maternity$Category),
-                                              selected = 'Route & Method'),
+                                              selected = 'All Deliveries'
+                                              ),
                                # Input: Dropdown Box for County
                                selectizeInput(inputId='county4', label = 'County',
-                                              choices = unique(maternity$County),
-                                              selected = 'Kings'),
+                                              choices = unique(maternity$County)
+                                              ),
                                uiOutput('hospital')
                                ),
                              mainPanel(
                                fluidRow(
                                  h1('Maternity and Birth Trends By County'),
-                                 column(5,
-                                        plotOutput('hospitalHist')
-                                 ),
-                                 column(5,
+                                 # column(8,
+                                 #        plotOutput('hospitalHist')
+                                 # ),
+                                 column(12,
                                         plotOutput('hospitalLine'))
                                 ),
                                fluidRow(
-                                 p('Plots above show how each metric varies over the years for each hospital.'))
+                                 p('Plot above show how each metric varies over the years for each hospital.'))
                                )
                              )
                            ) # last tab

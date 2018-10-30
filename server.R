@@ -56,14 +56,14 @@ server <-  function(input, output, session) {
   output$basicMap <- renderLeaflet({
     
     leaflet(NY) %>%
-      setView(lng = -76.0, lat = 42.75, zoom = 6.5) %>%
+      setView(lng = -76.0, lat = 42.75, zoom = 6.45) %>%
       addTiles() %>%
       addPolygons(fillColor = 'blue',
                   weight = 1,
                   opacity = 1,
                   color = 'white',
                   dashArray = '3',
-                  fillOpacity = 0.5, 
+                  fillOpacity = 0.5,
                   highlight = highlightOptions(weight = 3,
                                                color = 'white',
                                                dashArray = '',
@@ -139,10 +139,9 @@ server <-  function(input, output, session) {
     gvisGeoChart(h, locationvar = 'HospitalName',
                  sizevar='Count',
                  options=list(region='US-NY',displayMode='markers',
-                              resolution="metros",
-                              colorAxis="{values:[200,400,600,800],
-                              colors:[\'red', \'pink\', \'orange',\'green']}",
-                              magnifyingGlass="{enable: true, zoomFactor: 10.0}"
+                              resolution='metros',
+                              colorAxis= "{colors:[\'#e7711c\', \'#4374e0\']}",
+                              magnifyingGlass='{enable: true, zoomFactor: 10.0}'
                  )
     )
     
@@ -178,4 +177,7 @@ server <-  function(input, output, session) {
     
   })
   
+  session$onSessionEnded(function() {
+    stopApp()
+  })
 }
