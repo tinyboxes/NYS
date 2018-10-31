@@ -214,20 +214,18 @@ server <-  function(input, output, session) {
                    selected = 'Epidural Anesthesia')
   })
   
-  output$scatterPlot <- renderPlot({
+  d10 <- reactive({
     
     t10 <- twentyTen %>%
       filter(., Population <= 1000000)
-
     d10 <- t10[c(input$m1, input$m2)]
-    
-    d10 <- d10 %>%
-      
-    
     d10 <- d10 %>%
       rename(., x = input$m1, y = input$m2)
     
-    ggplot(d10, aes(x, y)) + 
+  })
+  output$scatterPlot <- renderPlot({
+
+    ggplot(d10(), aes(x, y)) + 
       geom_point() +
       geom_smooth(method=lm,
                   fill='grey') +
@@ -235,19 +233,27 @@ server <-  function(input, output, session) {
       ylab(input$m2) +
       theme(axis.text.x = element_text(face='bold', angle=45),
             axis.text.y = element_text(face='bold', angle=45))
+
     
   })
+  
+  model <- reactive({
+    
+    lm(x ~ y, data = d10)
+    
+  })
+  
 
   ### tab 3
   output$hospitalMap <- renderGvis({
     
     # filter input data
-    h_ <- hospital %>%
-      dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3)  %>%
-      select(., HospitalName, Measure, Count)
+    r <- hospital %>%
+      dplyr::filter(., Measure == input$metric3 & Year == input$year3)  %>%
+      select(., HospitalName, Count)
     
     # map data
-    gvisGeoChart(h_, locationvar = 'HospitalName',
+    g <- gvisGeoChart(r, locationvar = 'HospitalName',
                  sizevar='Count',
                  options=list(region='US-NY',displayMode='markers',
                               resolution='metros',
@@ -255,6 +261,7 @@ server <-  function(input, output, session) {
                               magnifyingGlass='{enable: true, zoomFactor: 10.0}',
                               width='automatic', height='automatic')
                  )
+    
   })
   
   d2 <- reactive({
@@ -268,16 +275,17 @@ server <-  function(input, output, session) {
     
     h2 <- hospital %>%
       dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3) %>%
+      select(., County, Count, Measure) %>%
       arrange(desc(Count))
     
-    top2 <- head(h2, 1)
-    bottom2 <- tail(h2, 1)
+    top_ <- head(h2, 1)
+    bottom_ <- tail(h2, 1)
     
-    str3 <- paste('<b>You have selected:</b>', input2$metric)
-    str4 <- paste('<b>Highest County:</b>', top$County,
-                  '<br><b>Count:</b>', top2$n, 
-                  '<br><b>Lowest County:</b>', bottom2$County,
-                  '<br><b>Count:</b>', bottom2$n, 
+    str3 <- paste('<b>You have selected:</b>', input$metric3)
+    str4 <- paste('<b>Highest County:</b>', top_$County,
+                  '<br><b>Count:</b>', top_$Count, 
+                  '<br><b>Lowest County:</b>', bottom_$County,
+                  '<br><b>Count:</b>', bottom_$Count, 
                   '<br><b>State Average:</b>', d2()$ave)
     HTML(paste(str3, str4, sep = '<br/>'))
     
