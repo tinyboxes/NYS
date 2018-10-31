@@ -47,41 +47,63 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                                                    choices = 2008:2016),
                                     # Input: Dropdown Box for Category
                                     selectizeInput(inputId='cat', label = 'Category',
-                                                   choices = unique(maternity$Category)),
+                                                   choices = unique(countyMaternity$Category)
+                                                   ),
                                     # Add metrics input after selecting category
-                                    uiOutput('metric')
+                                    uiOutput('metric'),
+                                    br(),
+                                    # textOutput('text1'),
+                                    # textOutput('text2'),
+                                    htmlOutput('text')
                                     )
-                           ),
+                                  ),
                            column(9,
                                   fluidRow(
-                                    h1('Maternity and Birth Trends By County'),
-                                    leafletOutput('countyMetric'),
-                                    p('Explore the map and see the different metric values for each county.'))
+                                    column(9,
+                                           p('Trends in New York State by Metric'),
+                                           leafletOutput('countyMap'))
+                                  ),
+                                  fluidRow(
+                                    column(9, 
+                                         p('County Numbers vs State Average'),
+                                         plotOutput('countyPlot'))
+                                  ),
+                                  fluidRow(
+                                    p('Explore the map and see the different metric values for each county.'),
+                                    p('The chart above shows how a metric varies by county in a given year.')
+                                    )
                            )
-                           ), # tab 1
+                 ), # tab 1
                  tabPanel(title = tagList(shiny::icon('bar-chart'), 'by County'),
                           fluid = TRUE,
                           sidebarLayout(
                             # sidebar panel to select inputs
                             sidebarPanel(
-                              helpText('To view county trends in maternity health and births in New York State 
+                              helpText('To view the top or bottom ten counties for each metric and year
                                         begin by selecting a year and category.'),
                               # Input: Dropdown Box to Select Year
                               selectizeInput(inputId = 'year2', label = 'Year',
-                                            choices = 2008:2016),
+                                            choices = 2008:2016,
+                                            selected = 2010),
                               # Input: Dropdown Box for Category
                               selectizeInput(inputId='cat2', label = 'Category',
-                                            choices = unique(maternity$Category)),
+                                            choices = unique(countyMaternity$Category),
+                                            select = 'Route & Method'),
                               # Add metrics input after selecting category
-                              uiOutput('metric2')
+                              uiOutput('metric2'),
+                              # selectizeInput(inputId='county2', label = 'County',
+                              #                choices = unique(countyMaternity$County)
+                              #                ),
+                              radioButtons(inputId = 'top', label = 'Top or Bottom 10', 
+                                           choices = c('Top', 'Bottom')) 
                               ),
                             mainPanel(
                               fluidRow(
-                                h1('Maternity and Birth Trends By County'),
-                                plotOutput('countyPlot'),
-                                p('The chart above shows how a metric varies by county in a given year.'),
-                                p('Note: As you change each metric, the scale on y-axis changes. '))
-                             )
+                                p('Comparison of County Total vs State Average'),
+                                plotOutput('state'),
+                                p('Note: As you change each metric, the scale on y-axis changes. Blue line indicate State Average for the year.')
+                                )
+                              )
                            )
                  ), # tab panel 2
                  tabPanel(title = tagList(shiny::icon('map'), 'Hospital Map'),
@@ -95,12 +117,12 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                               selectizeInput(inputId = 'year3', label = 'Year',
                                             choices = 2008:2016),
                               selectizeInput(inputId='cat3', label = 'Category',
-                                            choices = unique(maternity$Category),
+                                            choices = unique(countyMaternity$Category),
                                             selected = 'All Deliveries'),
                               uiOutput('metric3')),
                             mainPanel(
                               fluidRow(
-                                h1('Maternity and Birth Trends By Hospital'),
+                                p('Maternity and Birth Trends By Hospital'),
                                 htmlOutput('hospitalMap'),
                                 p('Explore specific hospital by clicking on a marker.'))
                               )
@@ -113,29 +135,29 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                              sidebarPanel(
                                helpText('To view hospital trends in maternity health and births in New York State 
                                         hospital, begin by selecting category, county and hospital.'),
+                               selectizeInput(inputId='year4', label = 'Year',
+                                              choices = 2008:2016
+                                              ),
                                # Input: Dropdown Box for Category
                                selectizeInput(inputId='cat4', label = 'Category',
-                                              choices = unique(maternity$Category),
+                                              choices = unique(countyMaternity$Category),
                                               selected = 'All Deliveries'
                                               ),
-                               # Input: Dropdown Box for County
-                               selectizeInput(inputId='county4', label = 'County',
-                                              choices = unique(maternity$County)
-                                              ),
-                               uiOutput('hospital')
+                               uiOutput('metric4'),
+                               # Input: Dropdown Box for Hospitals
+                               uiOutput('hosp1'),
+                               uiOutput('hosp2')
                                ),
                              mainPanel(
                                fluidRow(
-                                 h1('Maternity and Birth Trends By County'),
-                                 # column(8,
-                                 #        plotOutput('hospitalHist')
-                                 # ),
-                                 column(12,
+                                p('Comparing Hospital Trends'),
+                                  column(12,
                                         plotOutput('hospitalLine'))
                                 ),
                                fluidRow(
-                                 p('Plot above show how each metric varies over the years for each hospital.'))
+                                 p('Plot above show how each metric varies over the years for each hospital.'),
+                                 p('For comparison, the state average is plotted as well.'))
                                )
                              )
-                           ) # last tab
-                 ) # end navbarPage
+                  ) # last tab
+) # end navbarPage

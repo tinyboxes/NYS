@@ -4,47 +4,54 @@ library(rgdal)
 library(sp)
 library(shiny)
 library(tidyverse)
-library(ggplot2)
+library(plotly)
 library(leaflet)
 library(googleVis)
 library(mapdata)
 
 ### Load data ###
-# County shape files, transform from UTM to longlat
+# Load clean maternity data set
+maternity <- read_csv('./maternity.csv')
+# Load shapefiles, transform from UTM to longlat
 shape <-  readOGR('./Shapes/Counties_Shoreline.shp')
 NY <- spTransform(shape, CRS('+proj=longlat +ellps=GRS80'))
 
-df <- read_csv('./Hospital_Maternity_Information__Beginning_2008.csv')
+# Subset data for plots, etc.
 
-# reformatting columns
-cols = colnames(df)
-cols <- gsub("[[:space:]]", "", cols)
-colnames(df) <- cols
+# State Only Data (Get rows with County == Statewide | County == 'Rest Of State')
+statewide <- maternity %>%
+  filter(., County == 'Statewide' | County == 'Rest Of State')
+# Rename HospitalName and County for uniform data
+statewide$HospitalName = 'Statewide - All Hospitals'
+statewide$County = 'Statewide'
 
-# Subset necessary columns and rename
-maternity <- df %>%
-  dplyr::select(.,-FacilityID, -MeasureID, -Denominator) %>%
-  rename(., Measure = MeasureName, County = HospitalCounty)
+# Statewide Averages 
+stateAve <- statewide %>%
+  mutate(., ave = round(Count/52, 2))
 
-# Change county names to title string format
-maternity$County <- stringr::str_to_title(maternity$County)
+# County Only Data
+countyMaternity <- maternity %>%
+  filter(., !(County == 'Statewide') & !(County == 'Rest Of State'))
 
 # get value sums by county, year
-county_sum <- maternity %>%
+county_sum <- countyMaternity %>%
   group_by(County, Year, Measure) %>%
   dplyr::summarise(n= sum(Count))
 
 # get total births by county, year
-total <- maternity %>%
+total <- countyMaternity %>%
   filter(Measure == 'Total Births') %>%
   group_by(County, Year) %>%
   dplyr::summarise(t = sum(Count))
 
-# merge data frames to be used for percent computations
+# merge data frames to be used for county percent computations
 merged <- merge(county_sum, total)
 
-
 # append NY to hospital name for Google Vis Geochart
-hospital <- maternity
+hospital <- countyMaternity
 hospital$HospitalName <- hospital$HospitalName %>%
   paste0(., ', NY')
+
+### for Geochart County data... only 2010
+#sh10 <- readOGR('./Shapes/sh10.shp')
+
