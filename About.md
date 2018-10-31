@@ -17,31 +17,11 @@ Add datasets from 2017 onwards, once available.
 1. All Deliveries
    - Total Births
 2. Route & Method
-  - Forceps Delivery
-  - Low/Outlet Forceps Delivery
-  - Mid Forceps Delivery
-  - Vaginal Births
-  - Cesarean Births
-  - Primary Cesarean
-  - Repeat Cesarean
-  - Vaginal Birth After Prior Cesarean
-  - Total Births After Prior Cesarean   
+  - Forceps Delivery, Low/Outlet Forceps Delivery, Mid Forceps Delivery, Vaginal Births, Cesarean Births, Primary Cesarean, Repeat Cesarean, Vaginal Birth After Prior Cesarean, Total Births After Prior Cesarean   
 3. Characteristics of Labor & Delivery
-  - Internal Fetal Monitoring
-  - External Fetal Monitoring
-  - Induction - Artificial Rupture of Membranes
-  - Induction - Medicinal
-  - Augmented Labor
-  - Episiotomy
+  - Internal Fetal Monitoring, External Fetal Monitoring, Induction - Artificial Rupture of Membranes, Induction - Medicinal, Augmented Labor, Episiotomy
 4. Anesthesia & Analgesia
-  - Analgesia
-  - General Anesthesia
-  - Spinal Anesthesia
-  - Epidural Anesthesia
-  - Local/Other Anesthesia
-  - Paracervical Anesthesia
-  - Pudendal Anesthesia
-  - Epidural/Local Anesthesia           
+  - Analgesia, General Anesthesia, Spinal Anesthesia, Epidural Anesthesia,  Local/Other Anesthesia, Paracervical Anesthesia, Pudendal Anesthesia, Epidural/Local Anesthesia           
 5. Attendant
   - Attended by Licensed Midwife                         
 6. Fetal Presentation

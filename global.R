@@ -52,6 +52,17 @@ hospital <- countyMaternity
 hospital$HospitalName <- hospital$HospitalName %>%
   paste0(., ', NY')
 
-### for Geochart County data... only 2010
-#sh10 <- readOGR('./Shapes/sh10.shp')
+### Scatter Plot Analysis of 2010 data
 
+county10 <- county_sum %>%
+  filter(., Year %in% 2010) %>%
+  spread(., key = Measure, value = n)
+
+pop10 <- NY@data[c('NAME','POP2010')]
+
+pop10 <- pop10 %>%
+  rename(., County = NAME)
+
+twentyTen <- left_join(county10, pop10)
+twentyTen <- rename(twentyTen, Population = POP2010)
+twentyTen$Population <- as.integer(as.character(twentyTen$Population))

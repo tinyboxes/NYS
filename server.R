@@ -149,14 +149,6 @@ server <-  function(input, output, session) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       guides(fill=FALSE)
   })
-  
-  # output$text1 <- renderText({paste('You have selected', input$metric)})
-  # output$text2 <- renderText({paste('<b>Highest County:</b>', p()$County[1],
-  #                                   '<br>','<b>Count:', p()$n[1], '<br>',
-  #                                   '<b>Lowest County:</b>', p()$County[-1],
-  #                                   '<br>','<b>Count:', p()$n[-1], '<br>',
-  #                                   '<b>State Average:</b>', a()$ave)})
-    
     
   output$text <- renderUI({
     
@@ -206,31 +198,89 @@ server <-  function(input, output, session) {
       guides(fill=FALSE)
   })
   
-  ### for county vs state
-  # c <- reactive({
-  #   
-  #   c <- merged %>%
-  #     dplyr::filter(., Measure == input$metric2) %>%
-  #     dplyr::filter(., County == input$county2) %>%
-  #     select(., County, Year, Measure, n) %>%
-  #     sor
-  #   
-  # })
+  # tab 2.1
+  
+  ### for metric vs metric
+  
+  output$m1 <- renderUI ({
+    selectizeInput(inputId = 'm1', label = 'Metric 1',
+                   choices = unique(county_sum$Measure),
+                   selected = 'Cesarean Births')
+  })
+  
+  output$m2 <- renderUI ({
+    selectizeInput(inputId = 'm2', label = 'Metric 2',
+                   choices = unique(county_sum$Measure),
+                   selected = 'Epidural Anesthesia')
+  })
+  
+  output$scatterPlot <- renderPlot({
+    
+    t10 <- twentyTen %>%
+      filter(., Population <= 1000000)
+
+    d10 <- t10[c(input$m1, input$m2)]
+    
+    d10 <- d10 %>%
+      
+    
+    d10 <- d10 %>%
+      rename(., x = input$m1, y = input$m2)
+    
+    ggplot(d10, aes(x, y)) + 
+      geom_point() +
+      geom_smooth(method=lm,
+                  fill='grey') +
+      xlab(input$m1) +
+      ylab(input$m2) +
+      theme(axis.text.x = element_text(face='bold', angle=45),
+            axis.text.y = element_text(face='bold', angle=45))
+    
+  })
 
   ### tab 3
   output$hospitalMap <- renderGvis({
+    
     # filter input data
-    h <- hospital %>%
-      dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3 )
+    h_ <- hospital %>%
+      dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3)  %>%
+      select(., HospitalName, Measure, Count)
     
     # map data
-    gvisGeoChart(h, locationvar = 'HospitalName',
+    gvisGeoChart(h_, locationvar = 'HospitalName',
                  sizevar='Count',
                  options=list(region='US-NY',displayMode='markers',
                               resolution='metros',
                               colorAxis= "{colors:[\'orange\', \'yellow\', \'green\', \'blue\']}",
-                              magnifyingGlass='{enable: true, zoomFactor: 10.0}')
+                              magnifyingGlass='{enable: true, zoomFactor: 10.0}',
+                              width='automatic', height='automatic')
                  )
+  })
+  
+  d2 <- reactive({
+    stateAve %>%
+    dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3)
+  })
+  
+  output$text2 <- renderUI({
+    
+    # filter input data
+    
+    h2 <- hospital %>%
+      dplyr::filter(., Measure %in% input$metric3 & Year %in% input$year3) %>%
+      arrange(desc(Count))
+    
+    top2 <- head(h2, 1)
+    bottom2 <- tail(h2, 1)
+    
+    str3 <- paste('<b>You have selected:</b>', input2$metric)
+    str4 <- paste('<b>Highest County:</b>', top$County,
+                  '<br><b>Count:</b>', top2$n, 
+                  '<br><b>Lowest County:</b>', bottom2$County,
+                  '<br><b>Count:</b>', bottom2$n, 
+                  '<br><b>State Average:</b>', d2()$ave)
+    HTML(paste(str3, str4, sep = '<br/>'))
+    
   })
   
   ### tab 4
