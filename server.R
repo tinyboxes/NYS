@@ -41,14 +41,14 @@ server <-  function(input, output, session) {
     # reactive input select metrics to be graph
     selectizeInput(inputId = 'hosp1', 
                    label = 'Hospital 1',
-                   choices = unique(countyMaternity$HospitalName))
+                   choices = sort(unique(countyMaternity$HospitalName)))
   })
   
   output$hosp2 <- renderUI({
     # reactive input select metrics to be graph
     selectizeInput(inputId = 'hosp2', 
                    label = 'Hospital 2',
-                   choices = unique(countyMaternity$HospitalName))
+                   choices = sort(unique(countyMaternity$HospitalName)))
   })
   
   ### Intro page ###
@@ -187,62 +187,71 @@ server <-  function(input, output, session) {
       
     d <- stateAve %>%
         dplyr::filter(., Measure %in% input$metric2 & Year %in% input$year2)
-
-    ggplot(data = b, aes(x = County, y = n, fill = County)) +
-      geom_bar(stat = 'identity', position = 'dodge') +
-      geom_hline(yintercept = d$ave, color="blue") +
-      theme(legend.position='right') +
-      xlab('New York State Counties') + 
-      ylab('County Births') +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      guides(fill=FALSE)
+    
+    ggplot(data = b, aes(x = reorder(County, -n), y = n, fill = County)) +
+            geom_bar(stat = 'identity', position = 'dodge') +
+            geom_hline(yintercept = d$ave, color="blue") +
+            theme(legend.position='right') +
+            xlab('New York State Counties') + 
+            ylab('County Births') +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+            guides(fill=FALSE)
+ 
   })
   
   # tab 2.1
   
   ### for metric vs metric
+  choices <- unique(county_sum$Measure) %>% append('Population') %>% sort(., decreasing = FALSE)
   
   output$m1 <- renderUI ({
     selectizeInput(inputId = 'm1', label = 'Metric 1',
-                   choices = unique(county_sum$Measure),
+                   choices = choices ,
                    selected = 'Cesarean Births')
   })
   
   output$m2 <- renderUI ({
     selectizeInput(inputId = 'm2', label = 'Metric 2',
-                   choices = unique(county_sum$Measure),
+                   choices = choices,
                    selected = 'Epidural Anesthesia')
   })
   
   d10 <- reactive({
     
-    t10 <- twentyTen %>%
-      filter(., Population <= 1000000)
+    t10 <- twentyTen
     d10 <- t10[c(input$m1, input$m2)]
     d10 <- d10 %>%
       rename(., x = input$m1, y = input$m2)
     
   })
+  
+  # ggplotRegression <- function(fit){
+  #  
+  #   ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+  #     geom_point() +
+  #     stat_smooth(method = "lm", col = "red") +
+  #     labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+  #                        "Intercept =",signif(fit$coef[[1]],5 ),
+  #                        " Slope =",signif(fit$coef[[2]], 5),
+  #                        " P =",signif(summary(fit)$coef[2,4], 5)))
+  # }
+ 
   output$scatterPlot <- renderPlot({
-
-    ggplot(d10(), aes(x, y)) + 
+    
+    linear = lm(x ~ y, data = d10())
+    R2 = round(summary(linear)$r.squared, 3)
+    pVal = round(summary(linear)$coefficients[,4][2], 6)
+    
+    ggplot(d10(), aes(log(x), log(y))) +
       geom_point() +
       geom_smooth(method=lm,
                   fill='grey') +
       xlab(input$m1) +
       ylab(input$m2) +
       theme(axis.text.x = element_text(face='bold', angle=45),
-            axis.text.y = element_text(face='bold', angle=45))
-
-    
+            axis.text.y = element_text(face='bold', angle=45)) +
+      ggtitle(paste('R^2: ', R2))
   })
-  
-  model <- reactive({
-    
-    lm(x ~ y, data = d10)
-    
-  })
-  
 
   ### tab 3
   output$hospitalMap <- renderGvis({

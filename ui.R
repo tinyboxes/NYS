@@ -109,13 +109,11 @@ ui <- navbarPage(title = 'New York State Maternity and Birth Trends',
                             sidebarPanel(
                               p('This is a scatter plot analysis of 2010 data.'),
                               p('See if there are any correlations between metrics.'),
-                              p('select two measures from the dropdown boxes.'),
+                              p('Select two measures from the dropdown boxes.'),
                               # Input: Dropdown Box to Select Year
                               uiOutput('m1'),
                               # Add metrics input after selecting category
-                              uiOutput('m2'),
-                              p('Exclude counties with Population > 1,000,000.'),
-                              p('* Kings, Queens, New York, Bronx, Nassau and Suffolk (LI and NYC).')
+                              uiOutput('m2')
                               ),
                             mainPanel(
                               p('Comparison of 2010 Metric Data'),

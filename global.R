@@ -11,7 +11,7 @@ library(mapdata)
 
 ### Load data ###
 # Load clean maternity data set
-maternity <- read_csv('./maternity.csv')
+maternity <- read_csv('./Data/maternity.csv')
 # Load shapefiles, transform from UTM to longlat
 shape <-  readOGR('./Shapes/Counties_Shoreline.shp')
 NY <- spTransform(shape, CRS('+proj=longlat +ellps=GRS80'))
